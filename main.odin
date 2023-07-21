@@ -89,9 +89,9 @@ main :: proc() {
             particles[i].y += particles[i].dy * particles[i].vel_y
         }
 
-        if len(particles) > P_COUNT * 5 {
-            for i in 0 ..< P_COUNT {
-                ordered_remove(&particles, 0)
+        for i in 0 ..< len(particles) {
+            if (particles[i].x < 0 || particles[i].x > WIN_WIDTH || particles[i].y < 0 || particles[i].y > WIN_HEIGHT) {
+                ordered_remove(&particles, i)
             }
         }
         
