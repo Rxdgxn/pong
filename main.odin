@@ -104,7 +104,7 @@ main :: proc() {
             ball_y = player_y - BALL_SIZE - 1
         }
 
-        if ball_x + PADDLE_WIDTH / 2 < WIN_WIDTH && ball_x > 0 {
+        if ball_x + PADDLE_WIDTH / 2 < WIN_WIDTH && ball_x - PADDLE_WIDTH / 2 + BALL_SIZE > 0 {
             bot_x = ball_x - PADDLE_WIDTH / 2 + BALL_SIZE / 2
         }
 
