@@ -3,6 +3,8 @@ package main
 import "core:fmt"
 import "core:c"
 import "core:math/rand"
+import "core:strings"
+import "core:strconv"
 import rl "vendor:raylib"
 
 WIN_WIDTH :: 600
@@ -12,6 +14,7 @@ PADDLE_HEIGHT :: 20
 PADDLE_SPEED :: 10
 BALL_SIZE :: 20
 P_COUNT :: 5
+FONT_SIZE :: 48
 
 Particle :: struct {
     x, y, vel_x, vel_y, dx, dy: c.int,
@@ -24,8 +27,10 @@ ball_x, ball_y: c.int
 dx, dy: c.int = rand.choice(dirs), -1
 vel_x, vel_y: c.int = 8, 8
 particles: [dynamic]Particle
+colors := []rl.Color {rl.WHITE, rl.YELLOW, rl.GRAY, rl.BLUE, rl.LIME, rl.LIGHTGRAY, rl.RED}
 launched := false
 dirs := []c.int{-1, 1}
+score: c.int = 0
 
 set_random :: proc() {
     ball_x += dx * vel_x
@@ -48,12 +53,14 @@ change_ball_direction :: proc() {
             ball_x, ball_y = rl.GetRandomValue(0, WIN_WIDTH - BALL_SIZE), WIN_HEIGHT / 2 + BALL_SIZE / 2
             launched = false
             dx = rand.choice(dirs)
+            score = 0
             set_random()
         }
         // Paddles
         if ball_y + BALL_SIZE >= player_y && ball_x >= player_x && ball_x + 1 <= player_x + PADDLE_WIDTH {
             add_particles(rand.choice(dirs))
             dy *= -1
+            score += 1
             set_random()
         }
         if ball_y <= bot_y + PADDLE_HEIGHT && ball_x >= bot_x && ball_x + 1 <= bot_x + PADDLE_WIDTH {
@@ -65,10 +72,14 @@ change_ball_direction :: proc() {
 }
 
 add_particles :: proc(d_x: c.int) {
-    colors := []rl.Color {rl.WHITE, rl.YELLOW, rl.GRAY, rl.BLUE, rl.LIME, rl.LIGHTGRAY, rl.RED}
     for i in 0 ..< P_COUNT {
         append(&particles, Particle {ball_x, ball_y, d_x, rand.choice(dirs), rl.GetRandomValue(1, 5), rl.GetRandomValue(1, 5), rand.choice(colors)})
     }
+}
+
+to_string :: proc(x: $T) -> cstring {
+    buf: [4]byte
+    return strings.clone_to_cstring(strconv.itoa(buf[:], int(x)))
 }
 
 main :: proc() {
@@ -121,6 +132,8 @@ main :: proc() {
                 ordered_remove(&particles, i)
             }
         }
+
+        rl.DrawText(to_string(score), WIN_WIDTH / 2 - FONT_SIZE / 4, WIN_HEIGHT / 2 - FONT_SIZE / 4, FONT_SIZE, rl.WHITE)
         
         rl.EndDrawing()
     }
