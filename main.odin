@@ -7,13 +7,13 @@ import "core:strings"
 import "core:strconv"
 import rl "vendor:raylib"
 
-WIN_WIDTH :: 600
-WIN_HEIGHT :: 600
+WIN_WIDTH :: 1080
+WIN_HEIGHT :: 720
 PADDLE_WIDTH :: 120
 PADDLE_HEIGHT :: 20
 PADDLE_SPEED :: 10
 BALL_SIZE :: 20
-P_COUNT :: 5
+P_COUNT :: 10
 FONT_SIZE :: 48
 
 Particle :: struct {
@@ -85,7 +85,7 @@ to_string :: proc(x: $T) -> cstring {
 main :: proc() {
 
     rl.InitWindow(WIN_WIDTH, WIN_HEIGHT, "Pong")
-    rl.SetTargetFPS(40)
+    rl.SetTargetFPS(50)
 
     for !rl.WindowShouldClose() {
         rl.BeginDrawing()
@@ -133,7 +133,12 @@ main :: proc() {
             }
         }
 
-        rl.DrawText(to_string(score), WIN_WIDTH / 2 - FONT_SIZE / 4, WIN_HEIGHT / 2 - FONT_SIZE / 4, FONT_SIZE, rl.WHITE)
+        if score % 5 != 0 || score == 0 {
+            rl.DrawText(to_string(score), WIN_WIDTH / 2 - FONT_SIZE / 4, WIN_HEIGHT / 2 - FONT_SIZE / 4, FONT_SIZE, rl.WHITE)
+        }
+        else {
+            rl.DrawText(to_string(score), WIN_WIDTH / 2 - FONT_SIZE / 4, WIN_HEIGHT / 2 - FONT_SIZE / 4, FONT_SIZE, rand.choice(colors))
+        }
         
         rl.EndDrawing()
     }
