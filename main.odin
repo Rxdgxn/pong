@@ -14,6 +14,7 @@ PADDLE_HEIGHT :: 20
 PADDLE_SPEED :: 10
 BALL_SIZE :: 20
 P_COUNT :: 10
+P_SIZE :: 5
 FONT_SIZE :: 48
 
 Particle :: struct {
@@ -122,13 +123,13 @@ main :: proc() {
         change_ball_direction()
 
         for i in 0 ..< len(particles) {
-            rl.DrawRectangle(particles[i].x, particles[i].y, 10, 10, particles[i].color)
+            rl.DrawRectangle(particles[i].x, particles[i].y, P_SIZE, P_SIZE, particles[i].color)
             particles[i].x += particles[i].dx * particles[i].vel_x
             particles[i].y += particles[i].dy * particles[i].vel_y
         }
 
         for i in 0 ..< len(particles) {
-            if (particles[i].x < 0 || particles[i].x > WIN_WIDTH || particles[i].y < 0 || particles[i].y > WIN_HEIGHT) {
+            if particles[i].x < 0 || particles[i].x > WIN_WIDTH || particles[i].y < 0 || particles[i].y > WIN_HEIGHT {
                 ordered_remove(&particles, i)
             }
         }
